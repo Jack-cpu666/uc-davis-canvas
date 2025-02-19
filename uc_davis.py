@@ -9,27 +9,50 @@ HTML = """
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>UC DAVIS Canvas</title>
+
+  <!-- Google Fonts: Roboto -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link 
     rel="stylesheet" 
     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
   >
-  <style>
-    /* RESET & BASE STYLES */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { font-family: 'Roboto', sans-serif; height: 100%; }
-    body { display: flex; background-color: #F5F5F5; color: #333; }
 
-    /* LEFT SIDEBAR (CANVAS GLOBAL NAVIGATION) */
+  <style>
+    /***********************************************
+     * RESET & BASE STYLES
+     ***********************************************/
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      font-family: 'Roboto', sans-serif;
+      height: 100%;
+    }
+    body {
+      display: flex;
+      background-color: #F5F5F5;
+      color: #333;
+      /* Prevent horizontal scroll on small screens */
+      overflow-x: hidden;
+    }
+
+    /***********************************************
+     * SIDEBAR (Canvas Global Navigation)
+     ***********************************************/
     .sidebar {
-      width: 70px;
+      width: 70px; /* Will shrink on mobile via media query */
       background-color: #2D3B45;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding-top: 20px;
+      flex-shrink: 0; /* So it doesn't shrink on narrow screens */
     }
-    .nav-item { position: relative; }
+    .nav-item {
+      position: relative;
+    }
     .nav-link {
       width: 70px;
       height: 50px;
@@ -41,11 +64,21 @@ HTML = """
       transition: background 0.3s;
       cursor: pointer;
     }
-    .nav-link:hover { background: #394B59; }
-    .nav-link svg { width: 24px; height: 24px; fill: #fff; }
-    .sidebar .nav-item:not(:last-child) { margin-bottom: 10px; }
+    .nav-link:hover {
+      background: #394B59;
+    }
+    .nav-link svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+    .sidebar .nav-item:not(:last-child) {
+      margin-bottom: 10px;
+    }
 
-    /* SUBMENU (POP-OUT ON CLICK) */
+    /***********************************************
+     * SUBMENU (Pop-out on click)
+     ***********************************************/
     .submenu {
       display: none;
       position: absolute;
@@ -57,9 +90,15 @@ HTML = """
       min-width: 220px;
       z-index: 999;
     }
-    .submenu ul { list-style: none; }
-    .submenu ul li { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    .submenu ul li:last-child { border-bottom: none; }
+    .submenu ul {
+      list-style: none;
+    }
+    .submenu ul li {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .submenu ul li:last-child {
+      border-bottom: none;
+    }
     .submenu ul li a {
       display: block;
       padding: 8px 16px;
@@ -68,15 +107,24 @@ HTML = """
       transition: background-color 0.2s;
       cursor: pointer;
     }
-    .submenu ul li a:hover { background-color: #4B5C6C; }
-    .submenu.open { display: block; }
+    .submenu ul li a:hover {
+      background-color: #4B5C6C;
+    }
+    .submenu.open {
+      display: block;
+    }
 
-    /* MAIN CONTENT (TOP BAR + DASHBOARD) */
+    /***********************************************
+     * MAIN CONTENT (Top Bar + Dashboard)
+     ***********************************************/
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-width: 0; /* Helps content shrink on narrow screens */
     }
+
+    /* TOP BAR */
     .topbar {
       height: 60px;
       background: #fff;
@@ -85,11 +133,30 @@ HTML = """
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
+      flex-shrink: 0;
     }
-    .brand { display: flex; align-items: center; }
-    .brand .ucd { font-size: 1.5rem; font-weight: 700; color: #002855; }
-    .brand .canvas { font-size: 1.5rem; font-weight: 700; color: #FA3F2E; margin-left: 5px; }
-    .user { font-size: 1rem; font-weight: 500; color: #555; }
+    .brand {
+      display: flex;
+      align-items: center;
+    }
+    .brand .ucd {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #002855; /* UC Davis Blue */
+    }
+    .brand .canvas {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #FA3F2E; /* Canvas Red */
+      margin-left: 5px;
+    }
+    .user {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #555;
+    }
+
+    /* DASHBOARD */
     .dashboard {
       flex: 1;
       overflow-y: auto;
@@ -101,12 +168,15 @@ HTML = """
       color: #2D3B45;
     }
 
-    /* COURSE CARDS GRID */
+    /***********************************************
+     * COURSE CARDS GRID
+     ***********************************************/
     .courses-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
+
     .course-card {
       background: #fff;
       border-radius: 8px;
@@ -120,6 +190,7 @@ HTML = """
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     }
+
     .course-card-header {
       padding: 15px;
       border-top-left-radius: 8px;
@@ -131,6 +202,7 @@ HTML = """
       color: #fff;
       margin: 0;
     }
+
     .course-card-body {
       padding: 15px;
       display: flex;
@@ -142,6 +214,7 @@ HTML = """
       color: #777;
       margin-top: 8px;
     }
+
     .course-card-footer {
       margin-top: auto;
       display: flex;
@@ -151,7 +224,7 @@ HTML = """
       border-top: 1px solid #eee;
     }
     .grade {
-      background: #002855;
+      background: #002855; /* UC Davis Blue */
       color: #fff;
       padding: 5px 12px;
       border-radius: 20px;
@@ -164,9 +237,13 @@ HTML = """
       cursor: pointer;
       transition: color 0.2s;
     }
-    .dots:hover { color: #888; }
+    .dots:hover {
+      color: #888;
+    }
 
-    /* MODAL POPUP STYLES */
+    /***********************************************
+     * MODAL POPUP STYLES
+     ***********************************************/
     .modal {
       display: none;
       position: fixed;
@@ -199,7 +276,9 @@ HTML = """
       cursor: pointer;
       color: #333;
     }
-    .close-btn:hover { color: #666; }
+    .close-btn:hover {
+      color: #666;
+    }
 
     /* ASSIGNMENT LIST STYLES (inside modals) */
     .assignments {
@@ -233,6 +312,46 @@ HTML = """
       text-align: right;
       font-size: 1rem;
       color: #002855;
+    }
+
+    /***********************************************
+     * RESPONSIVE DESIGN (Media Query)
+     ***********************************************/
+    @media (max-width: 768px) {
+      /* Narrow the sidebar and nav links */
+      .sidebar {
+        width: 50px;
+      }
+      .nav-link {
+        width: 50px;
+        height: 50px;
+      }
+
+      /* Reduce padding in the topbar and main content */
+      .topbar {
+        padding: 0 10px;
+      }
+      .dashboard {
+        padding: 10px;
+      }
+
+      /* Make the courses grid a single column */
+      .courses-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .course-card {
+        width: 90%;
+        margin: 0 auto;
+      }
+
+      /* Adjust brand & user text sizes if desired */
+      .brand .ucd, .brand .canvas {
+        font-size: 1.2rem;
+      }
+      .user {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -352,7 +471,7 @@ HTML = """
     </div>
   </nav>
 
-  <!-- MAIN CONTENT (TOP BAR + DASHBOARD) -->
+  <!-- MAIN CONTENT (Top Bar + Dashboard) -->
   <div class="main">
     <!-- Top Bar -->
     <div class="topbar">
@@ -901,7 +1020,7 @@ HTML = """
       `,
       'helpHotline': `
         <h2>Canvas Support Hotline</h2>
-        <p>For immediate assistance, call the UC Davis Canvas Support Hotline at (530) 752-XXXX.</p>
+        <p>For immediate assistance, call the UC Davis Canvas Support Hotline at (530) 752-4322.</p>
       `
     };
 
